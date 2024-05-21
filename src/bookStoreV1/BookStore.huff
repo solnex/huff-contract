@@ -1,0 +1,68 @@
+
+//Interface
+#define function updateBooksNumber(uint256) nonpayable returns()
+#define function getNumberOfBook() view returns(uint256)
+
+
+//Storage
+#define constant NUMBER_OF_BOOKS_STORAGE_SLOT = FREE_STORAGE_POINTER()
+
+//0x608060405234801561000f575f80fd5b506101438061001d5f395ff3fe608060405234801561000f575f80fd5b5060043610610034575f3560e01c8063ca0cf44714610038578063fa64c75d14610054575b5f80fd5b610052600480360381019061004d91906100ba565b610072565b005b61005c61007b565b60405161006991906100f4565b60405180910390f35b805f8190555050565b5f8054905090565b5f80fd5b5f819050919050565b61009981610087565b81146100a3575f80fd5b50565b5f813590506100b481610090565b92915050565b5f602082840312156100cf576100ce610083565b5b5f6100dc848285016100a6565b91505092915050565b6100ee81610087565b82525050565b5f6020820190506101075f8301846100e5565b9291505056fea26469706673582212207084e74052efa5c14246b9abf11bb1c61c255b7995baae4117bd2eaaf82379fc64736f6c63430008140033
+// depolye input contains 
+// Create contract bytecode + Invalid
+// + Runtime Code + Invalid 
+// + Matedata
+//0xca0cf447
+//0xca0cf44700000000000000000000000000000000000000000000000000000000
+//00000001
+//0xca0cf44700000000000000000000000000000000000000000000000000000000 to right shift 28 bytes(224 bits)(0xe0)
+#define macro MAIN() = takes(0) returns(0){
+    // 0x00              //[0]
+    // calldataload      //[calldata(32)]
+    // 0xE0              //[0xE0,calldata(32)]
+    // shr               //[function_selector]
+    0x00 calldataload 0xE0 shr      //[function_selector]
+    //    dup1              //[function_selector,function_selector]
+    //    0xca0cf447        //[0xca0cf447,function_selector,function_selector]
+    //    eq                //[is_function_selector_match,function_selector]
+    //    updateJump        //[update_number_program_counter,is_function_selector_match,function_selector]
+    //    jumpi             //[function_selector]
+   
+    dup1 __FUNC_SIG(updateBooksNumber) eq updateJump jumpi
+       //0xfa64c75d  GetNumberOfBook signature
+    //    0xfa64c75d        //[0xfa64c75d,function_selector]
+    //    eq                //[is_function_selector_match]
+    //    getJump           //[get_number_program_counter,is_function_selector_match]
+    //    jumpi             //[]
+    0xfa64c75d eq __FUNC_SIG(getBooksNumber) jumpi
+    // if two function selector is not match then revert
+    0x00 0x00 revert
+
+       updateJump:
+        SET_NUMBER_OF_BOOKS()
+       getJump:
+        GET_NUMBER_OF_BOOKS()
+
+}
+#define macro SET_NUMBER_OF_BOOKS() = takes(0) returns(0){
+    //1. get the number of books from the calldata
+    0x04                                  //[4]
+    calldataload                          //[input_value]
+    //2. give it a slot to store the number of books
+    [NUMBER_OF_BOOKS_STORAGE_SLOT]        //[storage_slot, input_value]
+    //3. store the number of books in the 
+    sstore
+    stop
+        
+}
+#define macro GET_NUMBER_OF_BOOKS() = takes(0) returns(0){
+    // 1.get the storage slot
+    [NUMBER_OF_BOOKS_STORAGE_SLOT]         //[storage_slot]
+    // 2. load the number of books
+    sload                                  //[number_of_books]
+    0x00                                   //[number_of_books,0]
+    mstore                                 //[]   memory = number_of_books
+    // 3. return
+    0x20 0x00 return                      //[]
+        
+}

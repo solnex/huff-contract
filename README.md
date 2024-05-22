@@ -64,3 +64,9 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+### Debug
+
+``` 
+forge test --match-path *${MatchWords}* --debug ${functionName} 
+```

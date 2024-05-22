@@ -34,7 +34,7 @@
     //    eq                //[is_function_selector_match]
     //    getJump           //[get_number_program_counter,is_function_selector_match]
     //    jumpi             //[]
-    0xfa64c75d eq __FUNC_SIG(getBooksNumber) jumpi
+    __FUNC_SIG(getNumberOfBook) eq getJump jumpi
     // if two function selector is not match then revert
     0x00 0x00 revert
 

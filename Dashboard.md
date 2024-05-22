@@ -11,3 +11,8 @@
 - how to define a storage slot
 - how to get the data from storage
 - opcodes: sstore sload mstore return
+
+Learn roadmap
+- huff contract
+- bytecode decompile
+- yul 
